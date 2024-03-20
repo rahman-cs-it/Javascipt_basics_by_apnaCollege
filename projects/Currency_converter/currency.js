@@ -1,12 +1,7 @@
-const BASE_URL =
-    "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies";
-
-
-
-
+const BASE_URL ="https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies";
 
 const dropdowns = document.querySelectorAll(".dropdown select");
-const btn = document.querySelector("form button");
+const btn = document.querySelector("#ExchangeButton");
 const fromCurr = document.querySelector(".from select");
 const toCurr = document.querySelector(".to select");
 const msg = document.querySelector(".msg");
@@ -45,30 +40,33 @@ const swapping = () => {
   updateExchangeRate();
 };
 
-swap.addEventListener( "click", swapping );
+swap.addEventListener("click", (evt) => {
+  evt.preventDefault(); // Prevent the default button behavior
+  swapping(); // Execute the swapping function
+});
 
 const updateExchangeRate = async () => {
   
   let amount = document.querySelector(".amount input");
   let amtVal = amount.value;
-  
+  // console.log(amount.value)
   if (amtVal === "" || amtVal < 1) {
     amtVal = 1;
     amount.value = "1";
   }
-  // console.log(amount.value);
+   console.log(amount.value);
   const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}.json`;
   let response = await fetch(URL);
   let data = await response.json();
-  // console.log(amount.value)
+   console.log(data)
   
   let rate = data[fromCurr.value.toLowerCase()][toCurr.value.toLowerCase()];
   
-  // console.log(amount.value);
+   console.log(data);
   let finalAmount = amtVal * rate;
-  // console.log(amount.value);
+   console.log(finalAmount);
   msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
-  // console.log(amount.value);
+   console.log(msg);
 };
 
 const updateFlag = (element) => {
@@ -79,10 +77,13 @@ const updateFlag = (element) => {
   img.src = newSrc;
 };
 
-btn.addEventListener("click", (evt) => {
-  evt.preventDefault();
-  updateExchangeRate();
+btn.addEventListener("click", async (evt) => {
+  evt.preventDefault(); // Prevent the default form submission behavior
+
+  // Update the exchange rate
+  await updateExchangeRate();
 });
+
 
 window.addEventListener("load", () => {
   updateExchangeRate();
